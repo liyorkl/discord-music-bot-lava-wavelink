@@ -104,7 +104,7 @@ async def play(ctx: commands.Context, *, query: str) -> None:
         custom_player = CustomPlayer()
         vc: CustomPlayer = await ctx.author.voice.channel.connect(cls=custom_player)
 
-    vc.autoplay = wavelink.AutoPlayMode.enabled
+    vc.autoplay = wavelink.AutoPlayMode.partial
 
     tracks = await wavelink.Playable.search(
         query, source=wavelink.TrackSource.YouTubeMusic)
@@ -137,6 +137,7 @@ async def play(ctx: commands.Context, *, query: str) -> None:
 
     if not vc.playing:
 
+        await vc.pause(False)
         await vc.play(track)
         embedMessage = discord.Embed(
             title="Music on!!!",
@@ -208,6 +209,7 @@ async def skip(ctx: commands.Context):
         name=ctx.author.display_name + " | Using Azzy's Music Bot", icon_url=ctx.author.display_avatar)
     await ctx.send(embed=embedMessage)
     await vc.stop()
+    await vc.pause(False)
 
 
 @bot.command()
