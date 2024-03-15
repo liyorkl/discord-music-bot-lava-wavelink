@@ -1,0 +1,8 @@
+secrets_me.py
+cogs/
+logs/
+.vscode/
+settings.json
+.cache
+venv/
+music-bot/
