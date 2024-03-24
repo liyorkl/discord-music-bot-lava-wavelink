@@ -137,7 +137,6 @@ async def play(ctx: commands.Context, *, query: str) -> None:
 
     if not vc.playing:
 
-        await vc.pause(False)
         await vc.play(track)
         embedMessage = discord.Embed(
             title="Music on!!!",
@@ -198,6 +197,13 @@ async def resume(ctx: commands.Context):
         name=ctx.author.display_name + " | Using Azzy's Music Bot", icon_url=ctx.author.display_avatar)
     await ctx.send(embed=embedMessage)
 
+@bot.command()
+async def unpause(ctx: commands.Context):
+    await resume(ctx)
+
+@bot.command()
+async def go(ctx: commands.Context):
+    await resume(ctx)
 
 @bot.command()
 async def skip(ctx: commands.Context):
@@ -215,11 +221,18 @@ async def skip(ctx: commands.Context):
 @bot.command()
 async def queue(ctx: commands.Context):
     vc = ctx.voice_client
+    if not vc.queue:
+        embedMessage = discord.Embed(
+            title="Music Queue!!!",
+            description=f"No songs in the queue", color=discord.Color.blue())
+        embedMessage.set_author(
+            name=ctx.author.display_name + " | Using Azzy's Music Bot", icon_url=ctx.author.display_avatar)
+        return await ctx.send(embed=embedMessage)
     stringBuilder = f"Currently playing ***{vc.current.title}***\n\n"
     stringBuilder += f"Current Queue in **{vc.channel}** channel:\n"
     index = 0
     for track in vc.queue:
-        stringBuilder += f"*{index+1}*. Song: ***{track.title}***, Artist: **{track.artists[0]}** \n"
+        stringBuilder += f"*{index+1}*. Song: ***{track.title}***, Artist: **{track.author}** \n"
         index += 1
     embedMessage = discord.Embed(
         title="Music Queue!!!",
